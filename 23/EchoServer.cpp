@@ -1,0 +1,90 @@
+#include"EchoServer.h"
+
+// class EchoServer
+// {
+// private:
+//     TcpServer tcpserver_;
+// public:
+//     EchoServer(const std::string& ip, const uint16_t port);
+//     ~EchoServer();
+
+//     void Start();   //启动服务
+
+//     void HandleNewConnection(MySocket* clientsock);           //处理新客户端连接，在TcpServer类中回调此函数
+//     void HandleClose(Connection* conn);             //关闭客户端连接，在TcpServer类中回调此函数
+//     void HandleError(Connection* conn);             //客户端连接发生错误，在TcpServer类中回调此函数
+//     void HandleMessage(Connection* conn, std::string message);  //处理报文，在TcpServer类中回调此函数
+
+//     void HandleSendComplete(Connection* conn);    //发送完成之后的通知，在TcpServer类中回调此函数
+//     void HandleTimeOut(EventLoop* loop);     //epoll_wait()超时，在TcpServer类中回调此函数
+// };
+
+
+EchoServer::EchoServer(const std::string& ip, const uint16_t port):tcpserver_(ip, port)
+{
+    tcpserver_.setcloseconnectioncb(std::bind(&EchoServer::HandleClose, this, std::placeholders::_1));
+    tcpserver_.seterrorconnectioncb(std::bind(&EchoServer::HandleError, this, std::placeholders::_1));
+    tcpserver_.setnewconnectioncb(std::bind(&EchoServer::HandleNewConnection, this, std::placeholders::_1));
+    tcpserver_.setonmessagecb(std::bind(&EchoServer::HandleMessage, this, std::placeholders::_1, std::placeholders::_2));
+    tcpserver_.setsendcompletecb(std::bind(&EchoServer::HandleSendComplete, this, std::placeholders::_1));
+    // tcpserver_.settimeoutcb(std::bind(&EchoServer::HandleTimeOut, this, std::placeholders::_1));
+}
+
+EchoServer::~EchoServer()
+{}
+
+void EchoServer::Start()
+{
+    tcpserver_.start();
+}
+
+//处理新客户端连接，在TcpServer类中回调此函数
+void EchoServer::HandleNewConnection(Connection* conn)
+{
+    std::cout<<"New Connection Come in."<<std::endl;
+
+    //可根据业务需求扩展代码
+}
+
+//关闭客户端连接，在TcpServer类中回调此函数
+void EchoServer::HandleClose(Connection* conn)
+{
+    std::cout<<"EchoServer conn close."<<std::endl;
+
+    //可根据业务需求扩展代码
+}
+
+//客户端连接发生错误，在TcpServer类中回调此函数
+void EchoServer::HandleError(Connection* conn)
+{
+    std::cout<<"EchoServer conn error."<<std::endl;
+
+    //可根据业务需求扩展代码
+}        
+
+//处理报文，在TcpServer类中回调此函数
+void EchoServer::HandleMessage(Connection* conn, std::string message)
+{
+    message="reply:"+message;
+    int len=message.size();
+    std::string tmpbuf((char*)&len, 4);   //把报文头部填充到回应报文中
+    tmpbuf.append(message);               //把报文内容填充到回应报文中
+    //send(conn->fd(), tmpbuf.data(), tmpbuf.size(), 0);
+    conn->send(tmpbuf.data(), tmpbuf.size());   //把临时缓冲区的内容发送出去
+}
+
+//发送完成之后的通知，在TcpServer类中回调此函数
+void EchoServer::HandleSendComplete(Connection* conn)
+{
+    std::cout<<"Message send complete."<<std::endl;
+
+    //可根据业务需求扩展代码
+}  
+
+// //epoll_wait()超时，在TcpServer类中回调此函数
+// void EchoServer::HandleTimeOut(EventLoop* loop)
+// {
+//     std::cout<<"EchoServer timeout."<<std::endl;
+
+//     //可根据业务需求扩展代码
+// }
