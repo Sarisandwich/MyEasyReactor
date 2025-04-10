@@ -21,7 +21,7 @@ private:
     //任务队列，存储需要执行的任务，每个任务是一个可调用对象
     std::queue<std::function<void()>> taskqueue_;
     //互斥锁，保证对任务队列的并发访问是安全的
-    std::mutex mutex_;
+    std::mutex mtx_;
     //条件变量，用于线程间通信（如有任务就唤醒线程）
     std::condition_variable condition_;
     //原子布尔变量，表示线程池是否正在停止（防止并发问题）

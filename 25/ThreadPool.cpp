@@ -14,7 +14,7 @@ ThreadPool::ThreadPool(size_t threadnum):stop_(false)
                 std::function<void()> task;     //用于存放出队的元素
 
                 {   //锁作用域的开始。/////////////////////////////////
-                    std::unique_lock<std::mutex> lock(this->mutex_);
+                    std::unique_lock<std::mutex> lock(this->mtx_);
 
                     //等待生产者的条件变量
                     this->condition_.wait(lock, [this]
@@ -40,7 +40,7 @@ ThreadPool::ThreadPool(size_t threadnum):stop_(false)
 void ThreadPool::addtask(std::function<void()> task)
 {
     {   //锁作用域的开始。/////////////////////////////////
-        std::lock_guard<std::mutex> lock(mutex_);
+        std::lock_guard<std::mutex> lock(mtx_);
         taskqueue_.push(task);
     }   //锁作用域的结束。/////////////////////////////////
 
