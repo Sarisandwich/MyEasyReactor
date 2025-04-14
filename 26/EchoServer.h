@@ -8,7 +8,7 @@ class EchoServer
 private:
     TcpServer tcpserver_;
 public:
-    EchoServer(const std::string& ip, const uint16_t port, int threadnum=5);
+    EchoServer(const std::string& ip, const uint16_t port, int subthreadnum=5);
     ~EchoServer();
 
     void Start();   //启动服务
