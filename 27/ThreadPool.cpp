@@ -58,28 +58,3 @@ ThreadPool::~ThreadPool()
         th.join();
     }
 }
-
-/*
-void show(int num, const std::string& name)
-{
-    printf("我是%s, 学号是%d。\n", name.c_str(), num);
-}
-
-void test()
-{
-    printf("hello world!\n");
-}
-
-int main()
-{
-    ThreadPool threadpool(3);
-
-    std::string name="小明";
-    threadpool.addtask(std::bind(show, 23, name));
-    sleep(1);
-    threadpool.addtask(std::bind(test));
-    sleep(1);
-    threadpool.addtask(std::bind([]{printf("HELLOWORLD.\n");}));
-    sleep(1);
-}
-*/
