@@ -122,6 +122,7 @@ void Connection::onmessage()
 
 void Connection::send(const char* data, size_t size)
 {
+    if(disconnected_==true){printf("client disconnected. Connection::send() return.\n"); return;}
     outputbuffer_.appendwithhead(data, size);   //将数据添加到outputbuffer
     clientchannel_->enablewriting();    //注册写事件
 }
